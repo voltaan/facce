@@ -5,7 +5,11 @@ import numpy as np
 
 def faceDetection(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    haar_face = cv2.CascadeClassifier(r".\haar\haarcascade_frontalface_default.xml")
+    haar_face = cv2.CascadeClassifier(r"./haar/haarcascade_frontalface_default.xml")
+
+    if haar_face.empty():
+        raise Exception("Haar cascade file not found or unable to load.")
+
     face = haar_face.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
     return face, gray
 
@@ -14,22 +18,29 @@ def training_data(directory):
     faces = []
     facesID = []
 
-    for path, subdir, filename in os.walk(directory):
-        for filename in filename:
-            if filename.startsWith("."):
+    for path, subdir, filenames in os.walk(directory):
+        for filename in filenames:
+            if filename.startswith("."):
                 print("Found dotfile, skipping...")
                 continue
-            id = os.path.basename(filename)
+
+            id = os.path.basename(
+                path
+            ) 
             image_path = os.path.join(path, filename)
             img_test = cv2.imread(image_path)
             if img_test is None:
-                print("Error opening image")
+                print(f"Error opening image: {image_path}")
                 continue
+
             face, gray = faceDetection(img_test)
             if len(face) != 1:
+                print(f"Found {len(face)} faces in image {filename}, skipping...")
                 continue
+
             (x, y, w, h) = face[0]
-            region = gray[y : y + w, x : x + h]
+            region = gray[y : y + h, x : x + w]  # Corrected slicing
             faces.append(region)
             facesID.append(int(id))
+
     return faces, facesID
