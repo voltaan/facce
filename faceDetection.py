@@ -39,7 +39,7 @@ def training_data(directory):
                 continue
 
             (x, y, w, h) = face[0]
-            region = gray[y : y + h, x : x + w]  # Corrected slicing
+            region = gray[y : y + h, x : x + w] 
             faces.append(region)
             facesID.append(int(id))
 
