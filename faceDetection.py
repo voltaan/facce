@@ -10,7 +10,7 @@ def faceDetection(img):
     if haar_face.empty():
         raise Exception("Haar cascade file not found or unable to load.")
 
-    face = haar_face.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
+    face = haar_face.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=6)
     return face, gray
 
 
