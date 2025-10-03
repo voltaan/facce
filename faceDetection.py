@@ -21,7 +21,7 @@ def detectCamFace():
             roi_gray = gray[y : y + h, x : x + w]
             roi_color = img[y : y + h, x : x + w]
 
-        cv2.imshow("Webcam face detection tool - Press q to exit", img)
+        cv2.imshow("webcam face detection tool - press q to exit", img)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):  # Press 'q' to exit
             break
