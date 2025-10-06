@@ -1,3 +1,3 @@
-import faceDetection as fd
+import gui
 
-fd.detectEye(1920,1080,+1)
+gui.initUI()

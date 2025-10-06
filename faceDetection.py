@@ -5,7 +5,7 @@ faceCascade = cv2.CascadeClassifier('haar/haarcascade_frontalface_default.xml')
 eyeCascade = cv2.CascadeClassifier('haar/haarcascade_eye.xml')
 
 
-def detectFace(width, height, flip, scaleFactor=1.2, minNeighbors=5, red=255, green=0, blue=0):
+def detectFace(width, height, flip=+1, scaleFactor=1.2, minNeighbors=5, red=255, green=0, blue=0):
     cap = cv2.VideoCapture(0)
     cap.set(3, width)
     cap.set(4, height)
@@ -26,7 +26,7 @@ def detectFace(width, height, flip, scaleFactor=1.2, minNeighbors=5, red=255, gr
             roi_gray = gray[y:y + h, x:x + w]
             roi_color = img[y:y + h, x:x + w]
 
-        cv2.imshow('face detection - press esc to quit', img)
+        cv2.imshow('face detection - press esc to close', img)
 
         k = cv2.waitKey(30) & 0xff
         if k == 27:
@@ -66,7 +66,7 @@ def detectEye(width, height, flip=+1, scaleFactor=1.2, minNeighbors=5, eyeScaleF
             for (ex, ey, ew, eh) in eyes:
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (eyeRed, eyeGreen, eyeBlue), 2)
 
-        cv2.imshow('video', img)
+        cv2.imshow('eye detection - press esc to close', img)
 
         k = cv2.waitKey(30) & 0xff
         if k == 27:
