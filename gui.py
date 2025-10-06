@@ -1,11 +1,13 @@
 import sys
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, QLabel
+from PyQt6.QtCore import Qt
 
 import faceDetection as fd
 
 app = QApplication(sys.argv)
 mainWindow = QMainWindow()
+
 
 def initUI():
     mainWindow.setWindowTitle("facce - main window")
@@ -25,7 +27,7 @@ def initUI():
     fd_menu = menubar.addMenu("Face detection")
 
     webcam_action = QAction("Open face detection webcam", mainWindow)
-    webcam_action.triggered.connect(fd_webcam)
+    webcam_action.triggered.connect(fd_webcam_dialog)
 
     webcam_eyes_action = QAction("Open eye detection webcam", mainWindow)
     webcam_eyes_action.triggered.connect(fd_webcam_eyes)
@@ -45,7 +47,7 @@ def initUI():
     help_menu.addAction(about_facce)
     help_menu.addAction(about_qt)
 
-    mainWindow.setGeometry(100, 100, 800, 600)
+    mainWindow.setFixedSize(800, 600)
     mainWindow.show()
     sys.exit(app.exec())
 
@@ -62,10 +64,41 @@ def show_aboutQt():
     QApplication.aboutQt()
 
 
-def fd_webcam():
-    fd.detectFace(1920, 1080)
+def fd_webcam_dialog():
+    faceDetectionOptions = QDialog(mainWindow)
+    faceDetectionOptions.setFixedSize(400, 300)
+    faceDetectionOptions.setWindowTitle("face detection options")
 
+    layout = QVBoxLayout(faceDetectionOptions)
+
+
+
+    # Width
+    widthInput = QLineEdit("",faceDetectionOptions)
+    widthInput.setPlaceholderText("Width")
+    widthLabel = QLabel("If unsure, put the max width resolution of your webcam (ex 1280)", faceDetectionOptions)
+    layout.addWidget(widthInput)
+    layout.addWidget(widthLabel)
+
+    # Height
+    heightInput = QLineEdit("", faceDetectionOptions)
+    heightInput.setPlaceholderText("Height")
+    heightLabel = QLabel("If unsure, put the max height resolution of your webcam (ex 720)", faceDetectionOptions)
+    layout.addWidget(heightInput)
+    layout.addWidget(heightLabel)
+
+    # Submit button
+    submit = QPushButton("Submit", faceDetectionOptions)
+    layout.addWidget(submit)
+
+
+    faceDetectionOptions.show()
+
+def fd_webcam(width, height, flip, scaleFactor, minNeighbors, red, green, blue):
+    return 0
 
 def fd_webcam_eyes():
     fd.detectEye(1920, 1080)
 
+
+initUI()
