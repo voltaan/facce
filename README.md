@@ -17,8 +17,8 @@ Install dependencies using pip:
 pip install -r depends.txt
 ```
 
-Run `main.py`
+Run `gui.py`
 
 ```shell
-python main.py
+python gui.py
 ```
