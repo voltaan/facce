@@ -1,3 +1,3 @@
 import faceDetection as fd
 
-fd.detectCamFace()
+fd.detectEye(1920,1080,+1)

@@ -1,30 +1,72 @@
 import numpy as np
 import cv2
 
-def detectCamFace():
-    faceCascade = cv2.CascadeClassifier("haar/haarcascade_frontalface_default.xml")
+faceCascade = cv2.CascadeClassifier('haar/haarcascade_frontalface_default.xml')
+eyeCascade = cv2.CascadeClassifier('haar/haarcascade_eye.xml')
 
+def detectFace(width, height, flip, scaleFactor=1.2, minNeighbors=5):
     cap = cv2.VideoCapture(0)
-
-    cap.set(3, 640)
-    cap.set(4, 480)
+    cap.set(3, width)
+    cap.set(4, height)
 
     while True:
         ret, img = cap.read()
-        img = cv2.flip(img, +1)
+        img = cv2.flip(img, flip)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = faceCascade.detectMultiScale(
-            gray, scaleFactor=1.2, minNeighbors=6, minSize=(20, 20)
+            gray,
+            scaleFactor=scaleFactor,
+            minNeighbors=minNeighbors,
+            minSize=(20, 20)
         )
-        for x, y, w, h in faces:
+
+        for (x, y, w, h) in faces:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            roi_gray = gray[y : y + h, x : x + w]
-            roi_color = img[y : y + h, x : x + w]
+            roi_gray = gray[y:y+h, x:x+w]
+            roi_color = img[y:y+h, x:x+w]
 
-        cv2.imshow("webcam face detection tool - press q to exit", img)
+        cv2.imshow('face detection - press esc to quit', img)
 
-        if cv2.waitKey(1) & 0xFF == ord("q"):  # Press 'q' to exit
+        k = cv2.waitKey(30) & 0xff
+        if k == 27:
             break
 
+    cap.release()
+    cv2.destroyAllWindows()
+
+def detectEye(width, height, flip = +1, scaleFactor = 1.2, minNeighbors=5, eyeScaleFactor = 1.5, eyeMinNeighbors=10):
+    cap = cv2.VideoCapture(0)
+    cap.set(3,width)
+    cap.set(4,height)
+
+    while True:
+        ret, img = cap.read()
+        img = cv2.flip(img, flip)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=scaleFactor,
+            minNeighbors=minNeighbors,
+            minSize=(30,30)
+        )
+        for (x,y,w,h) in faces:
+            cv2.rectangle(img,(x,y),(x+w, y+h), (255,0,0),2)
+            roi_gray = gray[y:y+h, x:x+w]
+            roi_color = img[y:y+h, x:x+w]
+
+            eyes = eyeCascade.detectMultiScale(
+                roi_gray,
+                scaleFactor=eyeScaleFactor,
+                minNeighbors=eyeMinNeighbors,
+                minSize=(5,5)
+            )
+            for(ex, ey, ew, eh) in eyes:
+                cv2.rectangle(roi_color, (ex,ey), (ex+ ew, ey+eh), (0,255,0),2)
+
+        cv2.imshow('video', img)
+
+        k = cv2.waitKey(30) & 0xff
+        if k == 27:
+            break
     cap.release()
     cv2.destroyAllWindows()
