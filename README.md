@@ -1,5 +1,7 @@
 # facce
 
+A collection of tests and codes for face detection
+
 ## How to use it
 
 Set up a and activate new python venv:
