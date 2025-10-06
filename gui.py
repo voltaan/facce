@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, \
+    QLabel, QHBoxLayout, QWidget
 
 import faceDetection as fd
 
@@ -66,36 +66,80 @@ def show_aboutQt():
 
 def fd_webcam_dialog():
     faceDetectionOptions = QDialog(mainWindow)
-    faceDetectionOptions.setFixedSize(400, 300)
-    faceDetectionOptions.setWindowTitle("face detection options")
+    faceDetectionOptions.setFixedSize(500, 400)
+    faceDetectionOptions.setWindowTitle("Face Detection Options")
 
-    layout = QVBoxLayout(faceDetectionOptions)
-
-
+    # Main layout
+    layouts = QWidget(faceDetectionOptions)
+    layout = QVBoxLayout(layouts)
 
     # Width
-    widthInput = QLineEdit("",faceDetectionOptions)
+    widthInput = QLineEdit("")
     widthInput.setPlaceholderText("Width")
-    widthLabel = QLabel("If unsure, put the max width resolution of your webcam (ex 1280)", faceDetectionOptions)
+    widthLabel = QLabel("If unsure, set to the maximum width resolution of your webcam (e.g., 1280)")
     layout.addWidget(widthInput)
     layout.addWidget(widthLabel)
 
     # Height
-    heightInput = QLineEdit("", faceDetectionOptions)
+    heightInput = QLineEdit("")
     heightInput.setPlaceholderText("Height")
-    heightLabel = QLabel("If unsure, put the max height resolution of your webcam (ex 720)", faceDetectionOptions)
+    heightLabel = QLabel("If unsure, set to the maximum height resolution of your webcam (e.g., 720)")
     layout.addWidget(heightInput)
     layout.addWidget(heightLabel)
+
+    # Flip
+    flipInput = QLineEdit("")
+    flipInput.setPlaceholderText("Flip")
+    flipLabel = QLabel("If unsure, set to +1")
+    layout.addWidget(flipInput)
+    layout.addWidget(flipLabel)
+
+    # Scale factor
+    scaleFactorInput = QLineEdit("")
+    scaleFactorInput.setPlaceholderText("Scale Factor")
+    scaleFactorLabel = QLabel("If unsure, set to 1.0")
+    layout.addWidget(scaleFactorInput)
+    layout.addWidget(scaleFactorLabel)
+
+    # Minimum neighbors
+    minNeighborsInput = QLineEdit("")
+    minNeighborsInput.setPlaceholderText("Minimum Neighbors")
+    minNeighborsLabel = QLabel("If unsure, set to 5")
+    layout.addWidget(minNeighborsInput)
+    layout.addWidget(minNeighborsLabel)
+
+    # Red, Green, and Blue
+    colorLayout = QHBoxLayout()
+    redInput = QLineEdit("255")
+    redInput.setPlaceholderText("Red")
+    colorLayout.addWidget(redInput)
+
+    greenInput = QLineEdit("0")
+    greenInput.setPlaceholderText("Green")
+    colorLayout.addWidget(greenInput)
+
+    blueInput = QLineEdit("0")
+    blueInput.setPlaceholderText("Blue")
+    colorLayout.addWidget(blueInput)
+
+    # Color label
+    colorLabel = QLabel("Select the color (RGB) with you want to mark the detected face.")
+    layout.addWidget(colorLabel)
+
+    # Add color layout to main layout
+    layout.addLayout(colorLayout)
 
     # Submit button
     submit = QPushButton("Submit", faceDetectionOptions)
     layout.addWidget(submit)
 
-
+    # Show dialog
+    faceDetectionOptions.setLayout(layout)
     faceDetectionOptions.show()
 
+
 def fd_webcam(width, height, flip, scaleFactor, minNeighbors, red, green, blue):
-    return 0
+    fd.detectFace(width, height, flip, scaleFactor, minNeighbors, red, green, blue)
 
 def fd_webcam_eyes():
     fd.detectEye(1920, 1080)
