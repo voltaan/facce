@@ -1,9 +1,8 @@
 import sys
 
-from PyQt6.QtGui import QAction, QTextLine
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, \
-    QLabel, QHBoxLayout, QWidget, QErrorMessage
-
+    QLabel, QHBoxLayout, QWidget
 import faceDetection, webbrowser
 
 
@@ -15,7 +14,6 @@ class Gui(QMainWindow):
 
         self.create_menus()
 
-    # Create app menus
     def create_menus(self):
         # Initialize menubar as the main window menu bar
         menubar = self.menuBar()
@@ -36,6 +34,10 @@ class Gui(QMainWindow):
         webcam_eyes_action = QAction("Open eye detection webcam", self)
         webcam_eyes_action.triggered.connect(self.fd_eye_webcam_dialog)
         fd_menu.addAction(webcam_eyes_action)
+
+        webcam_smile_action = QAction("Open smile detection webcam", self)
+        webcam_smile_action.triggered.connect(self.fd_smile_webcam_dialog)
+        fd_menu.addAction(webcam_smile_action)
 
         help_menu = menubar.addMenu("Help")
 
@@ -91,8 +93,7 @@ class Gui(QMainWindow):
         eyeDetectionOptions.setFixedSize(500, 300)
         eyeDetectionOptions.setWindowTitle("eye detection options")
 
-        layouts = QWidget(eyeDetectionOptions)
-        layout = QVBoxLayout(layouts)
+        layout = QVBoxLayout(self)
 
         widthInput = self.add_label_and_input(layout, "Width", "(e.g. 1280)")
 
@@ -102,7 +103,8 @@ class Gui(QMainWindow):
 
         redInput, greenInput, blueInput = self.add_color(layout, "Select the color (RGB) to mark the faces detected.")
 
-        eyeRedInput, eyeGreenInput, eyeBlueInput = self.add_color(layout,"Select the color (RGB) to mark the eyes detected.")
+        eyeRedInput, eyeGreenInput, eyeBlueInput = self.add_color(layout,
+                                                                  "Select the color (RGB) to mark the eyes detected.")
 
         submit = QPushButton("Submit")
         submit.clicked.connect(
@@ -113,7 +115,37 @@ class Gui(QMainWindow):
         eyeDetectionOptions.setLayout(layout)
         eyeDetectionOptions.show()
 
-    def add_color(self, layout, message):
+    def fd_smile_webcam_dialog(self):
+        smileDetectionOptions = QDialog(self)
+        smileDetectionOptions.setFixedSize(500, 300)
+        smileDetectionOptions.setWindowTitle("smile detection options")
+
+        layouts = QWidget(self)
+        layout = QVBoxLayout(layouts)
+
+        widthInput = self.add_label_and_input(layout, "Width", "(e.g. 1280)")
+
+        heightInput = self.add_label_and_input(layout, "Height", "(e.g. 720)")
+
+        flipInput = self.add_label_and_input(layout, "Flip", "If unsure set to 1")
+
+        redInput, greenInput, blueInput = self.add_color(layout, "Select the color (RGB) to mark the faces detected.")
+
+        smileRedInput, smileGreenInput, smileBlueInput = self.add_color(layout,
+                                                                        "Select the color (RGB) to mark the smiles detected.")
+
+        submit = QPushButton("Submit")
+        submit.clicked.connect(
+            lambda: self.submit_fd_smile(smileDetectionOptions, widthInput.text(), heightInput.text(), flipInput.text(),
+                                         redInput.text(), greenInput.text(), blueInput.text(), smileRedInput.text(),
+                                         smileGreenInput.text(), smileBlueInput.text()))
+        layout.addWidget(submit)
+
+        smileDetectionOptions.setLayout(layout)
+        smileDetectionOptions.show()
+
+    @staticmethod
+    def add_color(layout, message):
         # Color label
         colorLabel = QLabel(message)
         layout.addWidget(colorLabel)
@@ -137,7 +169,8 @@ class Gui(QMainWindow):
         layout.addLayout(colorLayout)
         return redInput, greenInput, blueInput
 
-    def add_label_and_input(self, layout, placeholder, message):
+    @staticmethod
+    def add_label_and_input(layout, placeholder, message):
         input_field = QLineEdit("")
         input_field.setPlaceholderText(placeholder)
         label = QLabel(message)
@@ -145,7 +178,8 @@ class Gui(QMainWindow):
         layout.addWidget(input_field)
         return input_field
 
-    def submit_fd(self, dialog, widthText, heightText, flipText, redText, greenText, blueText):
+    @staticmethod
+    def submit_fd(dialog, widthText, heightText, flipText, redText, greenText, blueText):
         try:
             width = int(widthText)
             height = int(heightText)
@@ -153,12 +187,13 @@ class Gui(QMainWindow):
             red = int(redText)
             green = int(greenText)
             blue = int(blueText)
-            dialog.close()
+            dialog.hide()
             faceDetection.detectFace(width, height, flip, red, green, blue)
         except Exception as e:
             QMessageBox.critical(dialog, "Error", f"Error: {e}")
 
-    def submit_fd_eye(self, dialog, widthText, heightText, flipText, redText, greenText, blueText, eyeRedText,
+    @staticmethod
+    def submit_fd_eye(dialog, widthText, heightText, flipText, redText, greenText, blueText, eyeRedText,
                       eyeGreenText, eyeBlueText):
         try:
             width = int(widthText)
@@ -170,12 +205,31 @@ class Gui(QMainWindow):
             eyeRed = int(eyeRedText)
             eyeGreen = int(eyeGreenText)
             eyeBlue = int(eyeBlueText)
-            dialog.close()
+            dialog.hide()
             faceDetection.detectEye(width, height, flip, red, green, blue, eyeRed, eyeGreen, eyeBlue)
         except Exception as e:
             QMessageBox.critical(dialog, "Error", f"Error: {e}")
 
-    def open_issue(self):
+    @staticmethod
+    def submit_fd_smile(dialog, widthText, heightText, flipText, redText, greenText, blueText, smileRedText,
+                        smileGreenText, smileBlueText):
+        try:
+            width = int(widthText)
+            height = int(heightText)
+            flip = int(flipText)
+            red = int(redText)
+            green = int(greenText)
+            blue = int(blueText)
+            smileRed = int(smileRedText)
+            smileGreen = int(smileGreenText)
+            smileBlue = int(smileBlueText)
+            dialog.hide()
+            faceDetection.detectSmile(width, height, flip, red, green, blue, smileRed, smileGreen, smileBlue)
+        except Exception as e:
+            QMessageBox.critical(dialog, "Error", f"Error: {e}")
+
+    @staticmethod
+    def open_issue():
         webbrowser.open_new("https://github.com/voltaan/facce/issues")
 
 
