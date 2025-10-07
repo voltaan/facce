@@ -3,7 +3,7 @@ import cv2
 faceCascade = cv2.CascadeClassifier('haar/haarcascade_frontalface_default.xml')
 eyeCascade = cv2.CascadeClassifier('haar/haarcascade_eye.xml')
 
-def detectFace(width, height, flip=+1, scaleFactor=1.2, minNeighbors=5, red=255, green=0, blue=0):
+def detectFace(width, height, flip=+1, red=255, green=0, blue=0, scaleFactor=1.2, minNeighbors=5,):
     cap = cv2.VideoCapture(0)
     cap.set(3, width)
     cap.set(4, height)

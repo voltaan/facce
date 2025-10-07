@@ -2,7 +2,9 @@ import sys
 
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, \
-    QLabel, QHBoxLayout, QWidget
+    QLabel, QHBoxLayout, QWidget, QErrorMessage
+
+import faceDetection, webbrowser
 
 
 class Gui(QMainWindow):
@@ -32,15 +34,20 @@ class Gui(QMainWindow):
         fd_menu.addAction(webcam_action)
 
         webcam_eyes_action = QAction("Open eye detection webcam", self)
-        webcam_eyes_action.triggered.connect(self.fd_webcam_eyes)
+        # webcam_eyes_action.triggered.connect(self.fd_webcam_eyes)
         fd_menu.addAction(webcam_eyes_action)
 
         help_menu = menubar.addMenu("Help")
+
+        open_issue = QAction("Open a new issue...", self)
+        open_issue.triggered.connect(self.open_issue)
+        help_menu.addAction(open_issue)
+
         about_facce = QAction("About facce", self)
         about_facce.triggered.connect(self.show_about)
         help_menu.addAction(about_facce)
 
-        about_qt = QAction("About Qt")
+        about_qt = QAction("About Qt", self)
         about_qt.triggered.connect(QApplication.aboutQt)
         help_menu.addAction(about_qt)
 
@@ -49,7 +56,7 @@ class Gui(QMainWindow):
 
     def fd_webcam_dialog(self):
         faceDetectionOptions = QDialog(self)
-        faceDetectionOptions.setFixedSize(500, 400)
+        faceDetectionOptions.setFixedSize(500, 300)
         faceDetectionOptions.setWindowTitle("face detection options")
 
         # Main layout
@@ -58,20 +65,18 @@ class Gui(QMainWindow):
 
         # Width
         widthInput = self.add_label_and_input(layout, "Width",
-                                              "If unsure, set to the maximum width resolution of your webcam (e.g., 1280)")
+                                              "(e.g. 1280)")
 
         # Height
         heightInput = self.add_label_and_input(layout, "Height",
-                                               "If unsure, set to the maximum height resolution of your webcam (e.g., 720)")
+                                               "(e.g. 720)")
 
         # Flip
         flipInput = self.add_label_and_input(layout, "Flip", "If unsure, set to +1")
 
-        # Scale factor
-        scaleFactorInput = self.add_label_and_input(layout, "Scale factor", "If unsure, set to 1.0")
-
-        # Minimum neighbors
-        self.add_label_and_input(layout, "Minimum neighbors", "If unsure, set to 5")
+        # Color label
+        colorLabel = QLabel("Select the color (RGB) with you want to mark the detected face.")
+        layout.addWidget(colorLabel)
 
         # Color
         colorLayout = QHBoxLayout()
@@ -91,25 +96,39 @@ class Gui(QMainWindow):
         # Add color layout to main layout
         layout.addLayout(colorLayout)
 
-        # Color label
-        colorLabel = QLabel("Select the color (RGB) with you want to mark the detected face.")
-        layout.addWidget(colorLabel)
+        # Submit button
+        submit = QPushButton("Submit")
+
+        submit.clicked.connect(
+            lambda: self.submit_fd(faceDetectionOptions,widthInput.text(),heightInput.text(),flipInput.text(),redInput.text(),greenInput.text(),blueInput.text()))
+        layout.addWidget(submit)
 
         faceDetectionOptions.setLayout(layout)
         faceDetectionOptions.show()
-
 
     def add_label_and_input(self, layout, placeholder, message):
         input_field = QLineEdit("")
         input_field.setPlaceholderText(placeholder)
         label = QLabel(message)
-        layout.addWidget(input_field)
         layout.addWidget(label)
+        layout.addWidget(input_field)
         return input_field
 
-    def fd_webcam_eyes(self):
-        return 0
+    def submit_fd(self, dialog, widthText, heightText, flipText, redText, greenText, blueText):
+        try:
+            width = int(widthText)
+            height = int(heightText)
+            flip = int(flipText)
+            red = int(redText)
+            green = int(greenText)
+            blue = int(blueText)
+            dialog.close()
+            faceDetection.detectFace(width,height,flip,red,green,blue)
+        except Exception as e:
+            QMessageBox.critical(dialog,"Error", f"Error: {e}")
 
+    def open_issue(self):
+        webbrowser.open_new("https://github.com/voltaan/facce/issues")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
