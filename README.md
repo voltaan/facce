@@ -1,5 +1,7 @@
 # facce
 
+![hackatime](https://hackatime-badge.hackclub.com/U096FFK63H7/facce)
+
 A collection of tests and codes for face detection
 
 ## How to use it
