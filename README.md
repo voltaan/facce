@@ -30,3 +30,7 @@ Run `gui.py`
 ```shell
 python gui.py
 ```
+
+## Screenshot
+<img width="932" height="759" alt="immagine" src="https://github.com/user-attachments/assets/c105a7ad-4afe-4217-aa23-63841c31a730" />
+
