@@ -3,6 +3,7 @@ import sys
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QPushButton, QVBoxLayout, QLineEdit, \
     QLabel, QHBoxLayout, QWidget
+
 import faceDetection, webbrowser
 
 
@@ -13,6 +14,16 @@ class Gui(QMainWindow):
         self.setFixedSize(800, 600)
 
         self.create_menus()
+
+        welcomeLabel = QLabel("Welcome to facce! To begin, select a option from the menus.")
+        welcomeLabel.setStyleSheet("font-size: 24px; font-weight: bold;")
+
+        centralWidget = QWidget(self)
+        self.setCentralWidget(centralWidget)
+        layout = QVBoxLayout(centralWidget)
+
+        layout.addWidget(welcomeLabel)
+
 
     def create_menus(self):
         # Initialize menubar as the main window menu bar

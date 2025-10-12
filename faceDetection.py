@@ -112,3 +112,5 @@ def detectSmile(width, height, flip=+1, red = 255, green = 0, blue = 0, smileRed
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break
+    cap.release()
+    cv2.destroyAllWindows()
