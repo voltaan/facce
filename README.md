@@ -4,7 +4,7 @@
 
 A collection of tests and codes for face detection
 
-The name is translated from italian and it means "faces", as this project uses haar cascades to detect faces. 
+The name is translated from italian and it means "faces", as this project uses haar cascades from OpenCV to detect faces. 
 
 This project was made for [hackclub hackberry](https://hackberry.hackclub.com)
 
