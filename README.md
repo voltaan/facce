@@ -2,7 +2,7 @@
 
 ![hackatime](https://hackatime-badge.hackclub.com/U096FFK63H7/facce)
 
-A collection of tests and codes for face detection
+Simple program in qt to detect faces, eyes and smiles
 
 The name is translated from italian and it means "faces", as this project uses haar cascades from OpenCV to detect faces. 
 
