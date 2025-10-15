@@ -8,7 +8,7 @@ The name is translated from italian and it means "faces", as this project uses h
 
 This project was made for [hackclub hackberry](https://hackberry.hackclub.com)
 
-[Demo on YouTube](https://www.youtube.com/embed/_5op2X7bEns?si=bi5kwfkepOvBv3tC)
+[Demo on YouTube](https://youtu.be/hBdTN3lOpQA)
 
 ## How to use it
 
